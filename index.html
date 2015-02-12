@@ -1,137 +1,103 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Stylie.slideshows by typesettin</title>
+<html class="ts">
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>Stylie.slideshows</h1>
-        <p>A very simple 100% width slider that scales down to mobile</p>
+<head>
+  <title>Component Full With Slideshow</title>
+  <link rel="stylesheet" type="text/css" href="stylesheets/example.css">
+  <link rel="stylesheet" type="text/css" href="stylesheets/stylie.slideshows.css">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src='js/example.min.js'></script>
+</head>
 
-        <p class="view"><a href="https://github.com/typesettin/stylie.slideshows">View the Project on GitHub <small>typesettin/stylie.slideshows</small></a></p>
+<body>
+  <section class="ts-container">
+    <header class="ts-text-container">
+      <h1>Stylie Slideshows</h1>
+      <p>This slider has a 100% width layout and it is responsive. It operates with CSS transitions and the image is wrapped with an anchor. The anchor can be replaced by a division if no linking is needed. With a max-width set to 100%, the image will size down for smaller screens.</p>
+      <ul>
+        <li>Ported from CoDrops: <a href="http://tympanus.net/codrops/2013/02/26/full-width-image-slider/">RESPONSIVE FULL WIDTH Slideshow</a>
+        </li>
+        <li>
+          Full API <a href="http://typesettin.github.io/stylie.slideshows/api/html">documentation</a>
+        </li>
+      </ul>
+    </header>
+  </section>
+  <div>
 
-
+    <section id="SLIDESHOW" class="SLIDESHOW">
+      <div id="myslidedshow" class="myslidedshow ts-ss ts-ss-preview ">
         <ul>
-          <li><a href="https://github.com/typesettin/stylie.slideshows/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/typesettin/stylie.slideshows/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/typesettin/stylie.slideshows">View On <strong>GitHub</strong></a></li>
+          <li>
+            <article>
+              <h2>Travel &amp; Leisure Transporter</h2>
+              <figure>
+                <img src="https://raw.githubusercontent.com/typesettin/stylie.slideshows/master/example/img/1.jpg">
+              </figure>
+            </article>
+          </li>
+
+          <li>
+            <article>
+              <h2>No. 1 Southern Ocean Lodge, Kangaroo Island, Australia</h2>
+              <figure>
+                <img src="https://raw.githubusercontent.com/typesettin/stylie.slideshows/master/example/img/2.jpg">
+              </figure>
+            </article>
+          </li>
+
+          <li>
+            <article>
+              <h2>No. 2 Discovery Shores Boracay, Boracay, Philippines'</h2>
+              <figure>
+                <img src="https://raw.githubusercontent.com/typesettin/stylie.slideshows/master/example/img/3.jpg">
+              </figure>
+            </article>
+          </li>
+
+          <li>
+            <article>
+              <h2>No. 3 Lizard Island Resort, Great Barrier Reef, Australia</h2>
+              <figure>
+                <img src="https://raw.githubusercontent.com/typesettin/stylie.slideshows/master/example/img/4.jpg">
+              </figure>
+            </article>
+          </li>
+          <li>
+            <article>
+              <h2>No. 4 Hotel Santa Caterina, Amalfi, Italy</h2>
+              <figure>
+                <img src="https://raw.githubusercontent.com/typesettin/stylie.slideshows/master/example/img/5.jpg">
+              </figure>
+            </article>
+          </li>
         </ul>
-      </header>
-      <section>
-        <h1>
-<a id="stylieslideshows" class="anchor" href="#stylieslideshows" aria-hidden="true"><span class="octicon octicon-link"></span></a>stylie.slideshows</h1>
+      </div>
+      <!-- /maincontent -->
+    </section>
+    <!-- /tabs -->
+    <section class="ts-container">
+      <div class="ts-text-container">
+        <p class="info">Food Shapes/Icons by <a href="http://psdblast.com/50-food-icon-set-psd">PsdBlast</a>
+      </div>
+    </section>
+  </div>
+  <script>
+  (function(i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function() {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date();
+    a = s.createElement(o),
+      m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-<p>A very simple (framework independent) 100% width HTML slider that scales down to mobile. Added Touch &amp; Swipe Support. Inspired by <a href="http://tympanus.net/codrops/2013/02/26/full-width-image-slider/">Responsive full width slideshow</a></p>
+  ga('create', 'UA-52892914-6', 'auto');
+  ga('send', 'pageview');
+  </script>
+</body>
 
-<p><a href="https://github.com/typesettin/stylie.slideshows/blob/master/doc/api.md">API Documenation</a></p>
-
-<p><a href="https://raw.githubusercontent.com/typesettin/stylie.slideshows/master/example/img/slideshowscreenshot.png"><img src="https://raw.githubusercontent.com/typesettin/stylie.slideshows/master/example/img/slideshowscreenshot.png" alt="Full Width Slideshow"></a></p>
-
-<h2>
-<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h2>
-
-<p>Check out <code>example/index.html</code>, the example javascript for the example page is <code>resources/js/example_src.js</code></p>
-
-<h2>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
-
-<pre><code>$ npm install stylie.slideshows
-</code></pre>
-
-<p>The full width slideshow component is a browserified javascript module.</p>
-
-<h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
-
-<p><em>JavaScript</em></p>
-
-<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> fullWidthSlideshow <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>stylie.slideshows<span class="pl-pds">'</span></span>),
-    mySlideshow;
-<span class="pl-c">//initialize nav component after the dom has loaded</span>
-<span class="pl-s3">window</span>.addEventListener(<span class="pl-s1"><span class="pl-pds">'</span>load<span class="pl-pds">'</span></span>,<span class="pl-st">function</span>(){
-    <span class="pl-s">var</span> tabelement <span class="pl-k">=</span> <span class="pl-s3">document</span>.<span class="pl-s3">getElementById</span>(tabelement);
-    mySlideshow <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">fullWidthSlideshow</span>({element<span class="pl-k">:</span><span class="pl-s1"><span class="pl-pds">'</span>myslideshow<span class="pl-pds">'</span></span>});
-});</pre></div>
-
-<p><em>HTML</em></p>
-
-<div class="highlight highlight-html"><pre>&lt;<span class="pl-ent">html</span>&gt;
-    &lt;<span class="pl-ent">head</span>&gt;
-    &lt;<span class="pl-ent">title</span>&gt;Your Page&lt;/<span class="pl-ent">title</span>&gt;
-    &lt;<span class="pl-ent">link</span> <span class="pl-e">rel</span>=<span class="pl-s1"><span class="pl-pds">"</span>stylesheet<span class="pl-pds">"</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">"</span>text/css<span class="pl-pds">"</span></span> <span class="pl-e">href</span>=<span class="pl-s1"><span class="pl-pds">"</span>[path/to]/stylie.slideshows.css<span class="pl-pds">"</span></span>&gt;
-<span class="pl-s2">    &lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s1"><span class="pl-pds">'</span>[path/to/browserify/bundle].js<span class="pl-pds">'</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;</span>
-    &lt;/<span class="pl-ent">head</span>&gt;
-    &lt;<span class="pl-ent">body</span>&gt;
-         &lt;<span class="pl-ent">div</span> <span class="pl-e">id</span>=<span class="pl-s1"><span class="pl-pds">"</span>myslideshow<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s1"><span class="pl-pds">"</span>myslideshow p_c_fws-slideshow  p_c_fws-slideshow-preview<span class="pl-pds">"</span></span>&gt;
-        &lt;<span class="pl-ent">ul</span>&gt;
-          &lt;<span class="pl-ent">li</span>&gt;
-            slideshow slide 1, this can be any html
-          &lt;/<span class="pl-ent">li</span>&gt;
-          &lt;<span class="pl-ent">li</span>&gt;
-            slideshow slide 2, anything can go here
-          &lt;/<span class="pl-ent">li</span>&gt;
-          &lt;<span class="pl-ent">li</span>&gt;
-            slideshow slide 3
-          &lt;/<span class="pl-ent">li</span>&gt;
-        &lt;/<span class="pl-ent">ul</span>&gt;
-      &lt;/<span class="pl-ent">div</span>&gt;
-      <span class="pl-c">&lt;!-- /content --&gt;</span>
-    &lt;/<span class="pl-ent">div</span>&gt;
-    <span class="pl-c">&lt;!-- /tabs --&gt;</span>
-    &lt;/<span class="pl-ent">body</span>&gt;
-&lt;/<span class="pl-ent">html</span>&gt;</pre></div>
-
-<h2>
-<a id="api" class="anchor" href="#api" aria-hidden="true"><span class="octicon octicon-link"></span></a>API</h2>
-
-<div class="highlight highlight-javascript"><pre>mySlideshow.jump(<span class="pl-c1">3</span>); <span class="pl-c">//jump to slideshow at slide '3'</span>
-mySlideshow.<span class="pl-s3">navigate</span>(<span class="pl-s1"><span class="pl-pds">'</span>next<span class="pl-pds">'</span></span>); <span class="pl-c">//jump to next slide</span></pre></div>
-
-<h2>
-<a id="development" class="anchor" href="#development" aria-hidden="true"><span class="octicon octicon-link"></span></a>Development</h2>
-
-<p><em>Make sure you have grunt installed</em></p>
-
-<pre><code>$ npm install -g grunt-cli
-</code></pre>
-
-<p>Then run grunt watch</p>
-
-<pre><code>$ grunt watch
-</code></pre>
-
-<p>For generating documentation</p>
-
-<pre><code>$ grunt doc
-$ jsdoc2md lib/**/*.js index.js &gt; doc/api.md
-</code></pre>
-
-<h2>
-<a id="notes" class="anchor" href="#notes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notes</h2>
-
-<ul>
-<li>The Tab Module uses Node's event Emitter for event handling.</li>
-<li>The Template Generator uses EJS, but you can generate your own mark up</li>
-<li>The less file is located in <code>resources/stylesheets</code>
-</li>
-</ul>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/typesettin">typesettin</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
-  </body>
 </html>
