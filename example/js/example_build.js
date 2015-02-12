@@ -1,18 +1,18 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /*
- * slidie
- * http://github.com/typesettin/slidie
+ * stylie.slideshows
+ * http://github.com/typesettin/stylie.slideshows
  *
  * Copyright (c) 2014 Typesettin. All rights reserved.
  */
 
 'use strict';
 
-module.exports = require('./lib/slidie');
+module.exports = require('./lib/stylie.slideshow');
 
-},{"./lib/slidie":2}],2:[function(require,module,exports){
+},{"./lib/stylie.slideshow":2}],2:[function(require,module,exports){
 /*
- * slidie
+ * stylie.slideshows
  * http://github.com/typesettin
  *
  * Copyright (c) 2013 Amex Pub. All rights reserved.
@@ -24,7 +24,7 @@ var classie = require('classie'),
 	extend = require('util-extend'),
 	events = require('events'),
 	util = require('util'),
-	Hammer = require('hammerjs'),
+	Hammer,
 	detectCSS = require('detectcss');
 
 var getEventTarget = function (e) {
@@ -33,12 +33,12 @@ var getEventTarget = function (e) {
 };
 
 /**
- * A module that represents a full with slideshow componenet object, a slidie is a slideshow.
- * @{@link https://github.com/typesettin/slidie}
+ * A module that represents a full with slideshow componenet object, a stylie.slideshows is a slideshow.
+ * @{@link https://github.com/typesettin/stylie.slideshows}
  * @author Yaw Joseph Etse
  * @copyright Copyright (c) 2014 Typesettin. All rights reserved.
  * @license MIT
- * @constructor fullWidthSlideshow
+ * @constructor StylieSlideshow
  * @requires module:util-extent
  * @requires module:util
  * @requires module:events
@@ -47,7 +47,7 @@ var getEventTarget = function (e) {
  * @param {object} config {el -  element of tab container}
  * @param {object} options configuration options
  */
-var fullWidthSlideshow = function (config) {
+var StylieSlideshow = function (config) {
 	// console.log(config);
 	this.$el = config.element;
 	this._init(config.options);
@@ -56,31 +56,34 @@ var fullWidthSlideshow = function (config) {
 	this.navigate = this._navigate;
 };
 
-util.inherits(fullWidthSlideshow, events.EventEmitter);
+util.inherits(StylieSlideshow, events.EventEmitter);
 
 /** module default configuration */
-fullWidthSlideshow.prototype._init = function (options) {
+StylieSlideshow.prototype._init = function (options) {
 	var defaults = {
-		// default transition speed (ms)
-		speed: 500,
-		// default transition easing
-		easing: 'ease'
+		speed: 500, // default transition speed (ms)
+		touchsupport: true,
+		navarrows: true,
+		navarrows_next_html: '&gt;',
+		navarrows_next_class: 'ts-ss-slidenext',
+		navarrows_prev_html: '&lt;',
+		navarrows_prev_class: 'ts-ss-slideprev',
+		navdots: true,
+		navdots_class: 'ts-ss-dots',
+		navdots_current_class: 'ts-ss-currentdot',
+		easing: 'ease' // default transition easing
 	};
-	// options = extend( defaults,options );
-	// options
 	options = options || {};
 	this.options = extend(defaults, options);
-	// cache some elements and initialize some variables
 	this._config();
-	// initialize/bind the events
-	this._initEvents();
+	this._initEvents(); // initialize/bind the events
 };
 
 /**
  * initializes slideshow and shows current slide.
  * @emits slidesInitialized
  */
-fullWidthSlideshow.prototype._config = function () {
+StylieSlideshow.prototype._config = function () {
 	// the list of items
 	this.$list = this.$el.querySelector('ul');
 	this.$items = this.$list.querySelectorAll('li');
@@ -130,28 +133,27 @@ fullWidthSlideshow.prototype._config = function () {
 			this.$items[x].style.width = 100 / this.itemsCount + '%';
 		}
 	}
-	// add navigation arrows and the navigation dots if there is more than 1 item
-	if (this.itemsCount > 1) {
-		// add navigation arrows (the previous arrow is not shown initially):
-		var nav = document.createElement('nav');
-		nav.innerHTML = '<span class="p_c_fws-slideprev" style="display:none;">&lt;</span><span class="p_c_fws-slidenext">&gt;</span>';
-		this.$el.appendChild(nav);
-		this.$navPrev = this.$el.querySelector('.p_c_fws-slideprev');
-		this.$navNext = this.$el.querySelector('.p_c_fws-slidenext');
-
-
-		var dots = '';
-		for (var i = 0; i < this.itemsCount; ++i) {
-			// current dot will have the class p_c_fws-cuurentdot
-			var dot = i === this.current ? '<span class="p_c_fws-cuurentdot" data-itr="' + i + '"></span>' : '<span data-itr="' + i + '"></span>';
-			dots += dot;
+	if (this.itemsCount > 1) { // add navigation arrows and the navigation dots if there is more than 1 item
+		if (this.options.navarrows) { // add navigation arrows (the previous arrow is not shown initially):
+			var nav = document.createElement('nav');
+			nav.innerHTML = '<span class="' + this.options.navarrows_prev_class + '" style="display:none;">' + this.options.navarrows_prev_html + '</span><span class="' + this.options.navarrows_next_class + '">' + this.options.navarrows_next_html + '</span>';
+			this.$el.appendChild(nav);
+			this.$navPrev = this.$el.querySelector('.' + this.options.navarrows_prev_class);
+			this.$navNext = this.$el.querySelector('.' + this.options.navarrows_next_class);
 		}
-		var navDots = document.createElement('div');
-		navDots.setAttribute('class', 'p_c_fws-slidedots');
-		// console.log("navDots",navDots);
-		navDots.innerHTML = dots;
-		this.$el.appendChild(navDots);
-		this.$navDots = navDots.querySelectorAll('span');
+		if (this.options.navdots) {
+			var dots = '';
+			for (var i = 0; i < this.itemsCount; ++i) { // current dot will have the class p_c_fws-cuurentdot
+				var dot = i === this.current ? '<span class="' + this.options.navdots_current_class + '" data-itr="' + i + '"></span>' : '<span data-itr="' + i + '"></span>';
+				dots += dot;
+			}
+			var navDots = document.createElement('div');
+			navDots.setAttribute('class', this.options.navdots_class);
+			// console.log("navDots",navDots);
+			navDots.innerHTML = dots;
+			this.$el.appendChild(navDots);
+			this.$navDots = navDots.querySelectorAll('span');
+		}
 	}
 	this.emit('slidesInitialized');
 };
@@ -159,8 +161,9 @@ fullWidthSlideshow.prototype._config = function () {
 /**
  * handle slideshow click events.
  */
-fullWidthSlideshow.prototype._initEvents = function () {
-	if (this.options) {
+StylieSlideshow.prototype._initEvents = function () {
+	if (this.options.touchsupport) {
+		Hammer = require('hammerjs');
 		var hammertime = new Hammer(this.$el, {
 			drag_block_horizontal: true
 		});
@@ -175,25 +178,26 @@ fullWidthSlideshow.prototype._initEvents = function () {
 			this._navigate('next');
 		}.bind(this));
 	}
-
 	if (this.itemsCount > 1) {
-		this.$navPrev.addEventListener('click', function () {
-			this._navigate('previous');
-		}.bind(this));
+		if (this.options.navarrows) {
+			this.$navPrev.addEventListener('click', function () {
+				this._navigate('previous');
+			}.bind(this));
 
-		this.$navNext.addEventListener('click', function () {
-			this._navigate('next');
-		}.bind(this));
+			this.$navNext.addEventListener('click', function () {
+				this._navigate('next');
+			}.bind(this));
+		}
+		if (this.options.navdots) {
+			this.$navDotDom = this.$el.querySelector('.' + this.options.navdots_class);
 
-
-		this.$navDotDom = this.$el.querySelector('.p_c_fws-slidedots');
-
-		this.$navDotDom.addEventListener('click', function (event) {
-			var target = getEventTarget(event);
-			if (target.tagName === 'SPAN') {
-				this._jump(target.getAttribute('data-itr'));
-			}
-		}.bind(this));
+			this.$navDotDom.addEventListener('click', function (event) {
+				var target = getEventTarget(event);
+				if (target.tagName === 'SPAN') {
+					this._jump(target.getAttribute('data-itr'));
+				}
+			}.bind(this));
+		}
 	}
 };
 
@@ -202,7 +206,7 @@ fullWidthSlideshow.prototype._initEvents = function () {
  * @param {string} direction (previous|next) slide
  * @emits slided
  */
-fullWidthSlideshow.prototype._navigate = function (direction) {
+StylieSlideshow.prototype._navigate = function (direction) {
 	// do nothing if the list is currently moving
 	if (this.isAnimating) {
 		return false;
@@ -229,8 +233,7 @@ fullWidthSlideshow.prototype._navigate = function (direction) {
  * slide to show this.current(index) slide.
  * @emits slided
  */
-fullWidthSlideshow.prototype._slide = function () {
-
+StylieSlideshow.prototype._slide = function () {
 	// check which navigation arrows should be shown
 	this._toggleNavControls();
 	// translate value
@@ -260,37 +263,35 @@ fullWidthSlideshow.prototype._slide = function () {
 /**
  * update slideshow ui.
  */
-fullWidthSlideshow.prototype._toggleNavControls = function () {
-
-	// if the current item is the first one in the list, the left arrow is not shown
-	// if the current item is the last one in the list, the right arrow is not shown
-	switch (this.current) {
-	case 0:
-		this.$navNext.style.display = 'block';
-		this.$navPrev.style.display = 'none';
-		break;
-	case this.itemsCount - 1:
-		this.$navNext.style.display = 'none';
-		this.$navPrev.style.display = 'block';
-		break;
-	default:
-		this.$navNext.style.display = 'block';
-		this.$navPrev.style.display = 'block';
-		break;
+StylieSlideshow.prototype._toggleNavControls = function () {
+	if (this.options.navarrows) {
+		// if the current item is the first one in the list, the left arrow is not shown
+		// if the current item is the last one in the list, the right arrow is not shown
+		switch (this.current) {
+		case 0:
+			this.$navNext.style.display = 'block';
+			this.$navPrev.style.display = 'none';
+			break;
+		case this.itemsCount - 1:
+			this.$navNext.style.display = 'none';
+			this.$navPrev.style.display = 'block';
+			break;
+		default:
+			this.$navNext.style.display = 'block';
+			this.$navPrev.style.display = 'block';
+			break;
+		}
 	}
-	// highlight navigation dot
-	classie.remove(this.$navDots[this.old], 'p_c_fws-cuurentdot');
-	classie.add(this.$navDots[this.current], 'p_c_fws-cuurentdot');
-
-	// this.$navDots[this.old].removeClass( 'p_c_fws-cuurentdot' ).end().eq( this.current ).addClass( 'p_c_fws-cuurentdot' );
-
+	if (this.options.navdots) { // highlight navigation dot
+		classie.remove(this.$navDots[this.old], this.options.navdots_current_class);
+		classie.add(this.$navDots[this.current], this.options.navdots_current_class);
+	}
 };
 /**
  * jump to specific slide.
  * @param {number} position slide to show
  */
-fullWidthSlideshow.prototype._jump = function (position) {
-
+StylieSlideshow.prototype._jump = function (position) {
 	// do nothing if clicking on the current dot, or if the list is currently moving
 	if (position === this.current || this.isAnimating) {
 		return false;
@@ -301,15 +302,18 @@ fullWidthSlideshow.prototype._jump = function (position) {
 	this.current = position;
 	// slide
 	this._slide();
-
 };
 /**
  * delete/remove slideshow elements
  */
-fullWidthSlideshow.prototype.destroy = function () {
+StylieSlideshow.prototype.destroy = function () {
 	if (this.itemsCount > 1) {
-		this.$navPrev.parent().remove();
-		this.$navDots.parent().remove();
+		if (this.options.navarrows) {
+			this.$navPrev.parent().remove();
+		}
+		if (this.options.navdots) {
+			this.$navDots.parent().remove();
+		}
 	}
 	this.$list.css('width', 'auto');
 	if (this.support) {
@@ -319,18 +323,18 @@ fullWidthSlideshow.prototype.destroy = function () {
 };
 
 if (typeof window === 'object') {
-	window.fullWidthSlideshow = fullWidthSlideshow;
+	window.StylieSlideshow = StylieSlideshow;
 }
 if (typeof module === 'object') {
-	module.exports = fullWidthSlideshow;
+	module.exports = StylieSlideshow;
 }
 
 },{"classie":3,"detectcss":5,"events":7,"hammerjs":12,"util":11,"util-extend":13}],3:[function(require,module,exports){
 /*
  * classie
- * http://github.com/typesettin/classie
+ * http://github.amexpub.com/modules/classie
  *
- * Copyright (c) 2014 Typesettin. All rights reserved.
+ * Copyright (c) 2013 AmexPub. All rights reserved.
  */
 
 module.exports = require('./lib/classie');
@@ -421,9 +425,9 @@ module.exports = require('./lib/classie');
 },{}],5:[function(require,module,exports){
 /*
  * detectCSS
- * http://github.com/typesettin/detectCSS
+ * http://github.amexpub.com/modules/detectCSS
  *
- * Copyright (c) 2014 Typesettin. All rights reserved.
+ * Copyright (c) 2013 AmexPub. All rights reserved.
  */
 
 module.exports = require('./lib/detectCSS');
@@ -431,7 +435,7 @@ module.exports = require('./lib/detectCSS');
 },{"./lib/detectCSS":6}],6:[function(require,module,exports){
 /*
  * detectCSS
- * http://github.com/typesettin
+ * http://github.amexpub.com/modules
  *
  * Copyright (c) 2013 Amex Pub. All rights reserved.
  */
@@ -799,46 +803,39 @@ if (typeof Object.create === 'function') {
 // shim for using process in browser
 
 var process = module.exports = {};
+var queue = [];
+var draining = false;
 
-process.nextTick = (function () {
-    var canSetImmediate = typeof window !== 'undefined'
-    && window.setImmediate;
-    var canPost = typeof window !== 'undefined'
-    && window.postMessage && window.addEventListener
-    ;
-
-    if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
+function drainQueue() {
+    if (draining) {
+        return;
     }
-
-    if (canPost) {
-        var queue = [];
-        window.addEventListener('message', function (ev) {
-            var source = ev.source;
-            if ((source === window || source === null) && ev.data === 'process-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-
-        return function nextTick(fn) {
-            queue.push(fn);
-            window.postMessage('process-tick', '*');
-        };
+    draining = true;
+    var currentQueue;
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        var i = -1;
+        while (++i < len) {
+            currentQueue[i]();
+        }
+        len = queue.length;
     }
-
-    return function nextTick(fn) {
-        setTimeout(fn, 0);
-    };
-})();
+    draining = false;
+}
+process.nextTick = function (fun) {
+    queue.push(fun);
+    if (!draining) {
+        setTimeout(drainQueue, 0);
+    }
+};
 
 process.title = 'browser';
 process.browser = true;
 process.env = {};
 process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
 
 function noop() {}
 
@@ -852,13 +849,14 @@ process.emit = noop;
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
-}
+};
 
 // TODO(shtylman)
 process.cwd = function () { return '/' };
 process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
+process.umask = function() { return 0; };
 
 },{}],10:[function(require,module,exports){
 module.exports = function isBuffer(arg) {

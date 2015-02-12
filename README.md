@@ -1,10 +1,10 @@
-# slidie
+# stylie.slideshows
 
 A very simple (framework independent) 100% width HTML slider that scales down to mobile. Added Touch & Swipe Support. Inspired by [Responsive full width slideshow](http://tympanus.net/codrops/2013/02/26/full-width-image-slider/)
 
-[API Documenation](https://github.com/typesettin/slidie/blob/master/doc/api.md)
+[API Documenation](https://github.com/typesettin/stylie.slideshows/blob/master/doc/api.md)
  
-[![Full Width Slideshow](https://raw.githubusercontent.com/typesettin/slidie/master/example/img/slideshowscreenshot.png)](https://raw.githubusercontent.com/typesettin/slidie/master/example/img/slideshowscreenshot.png)
+[![Full Width Slideshow](https://raw.githubusercontent.com/typesettin/stylie.slideshows/master/example/img/slideshowscreenshot.png)](https://raw.githubusercontent.com/typesettin/stylie.slideshows/master/example/img/slideshowscreenshot.png)
 
 ## Example
 
@@ -13,7 +13,7 @@ Check out `example/index.html`, the example javascript for the example page is `
 ## Installation
 
 ```
-$ npm install slidie
+$ npm install stylie.slideshows
 ```
 
 The full width slideshow component is a browserified javascript module.
@@ -22,7 +22,7 @@ The full width slideshow component is a browserified javascript module.
 
 *JavaScript*
 ```javascript
-var fullWidthSlideshow = require('slidie'),
+var fullWidthSlideshow = require('stylie.slideshows'),
 	mySlideshow;
 //initialize nav component after the dom has loaded
 window.addEventListener('load',function(){
@@ -36,7 +36,7 @@ window.addEventListener('load',function(){
 <html>
 	<head>
   	<title>Your Page</title>
-  	<link rel="stylesheet" type="text/css" href="[path/to]/slidie.css">
+  	<link rel="stylesheet" type="text/css" href="[path/to]/stylie.slideshows.css">
   	<script src='[path/to/browserify/bundle].js'></script>
 	</head>
 	<body>

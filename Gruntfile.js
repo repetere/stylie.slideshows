@@ -1,6 +1,6 @@
 /*
- * component.full-width-slideshow
- * http://github.com/typesettin/component.full-width-slideshow
+ * stylie.slideshows
+ * http://github.com/typesettin/stylie.slideshows
  *
  * Copyright (c) 2014 Yaw Joseph Etse. All rights reserved.
  */
@@ -36,7 +36,7 @@ module.exports = function (grunt) {
 			]
 		},
 		jsbeautifier: {
-			files: ['<%= jshint.all %>', '!resources/template/component_full_width_slideshow.ejs'],
+			files: ['<%= jshint.all %>', '!resources/template/stylie.slideshows.ejs'],
 			options: {
 				config: '.jsbeautify'
 			}
@@ -106,7 +106,7 @@ module.exports = function (grunt) {
 					compress: true
 				},
 				files: {
-					'example/stylesheets/component.full-width-slideshow.css': 'resources/stylesheets/component.full-width-slideshow.less',
+					'example/stylesheets/stylie.slideshows.css': 'resources/stylesheets/stylie.slideshows.less',
 					'example/stylesheets/example.css': 'resources/stylesheets/example.less'
 				}
 			}
