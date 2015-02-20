@@ -23,7 +23,9 @@ module.exports = require('./lib/stylie.slideshow');
 var classie = require('classie'),
 	extend = require('util-extend'),
 	events = require('events'),
+	Pushie = require('pushie'),
 	util = require('util'),
+	slideshowPushie,
 	Hammer,
 	detectCSS = require('detectcss');
 
@@ -50,10 +52,10 @@ var getEventTarget = function (e) {
 var StylieSlideshow = function (config) {
 	// console.log(config);
 	this.$el = config.element;
-	this._init(config.options);
 	this.jump = this._jump;
 	this.slide = this._slide;
 	this.navigate = this._navigate;
+	this._init(config.options);
 };
 
 util.inherits(StylieSlideshow, events.EventEmitter);
@@ -63,6 +65,7 @@ StylieSlideshow.prototype._init = function (options) {
 	var defaults = {
 		speed: 500, // default transition speed (ms)
 		touchsupport: true,
+		usepushstate: false,
 		navarrows: true,
 		navarrows_next_html: '&gt;',
 		navarrows_next_class: 'ts-ss-slidenext',
@@ -84,6 +87,7 @@ StylieSlideshow.prototype._init = function (options) {
  * @emits slidesInitialized
  */
 StylieSlideshow.prototype._config = function () {
+
 	// the list of items
 	this.$list = this.$el.querySelector('ul');
 	this.$items = this.$list.querySelectorAll('li');
@@ -154,6 +158,39 @@ StylieSlideshow.prototype._config = function () {
 			this.$el.appendChild(navDots);
 			this.$navDots = navDots.querySelectorAll('span');
 		}
+	}
+	if (this.options.usepushstate) {
+		var initSlideIndex,
+			jumpToSlide = function (data) {
+				// console.log('popcallback');
+				this.jump(data.currentSlide);
+			}.bind(this),
+			jumpToFirstInitialSlide = function () {
+				var winhref, winhash;
+				for (var q = 0; q < this.itemsCount; q++) {
+					winhref = window.location.href;
+					winhref = (winhref.search(window.location.origin) >= 0) ? winhref.replace(window.location.origin, '') : winhref;
+					winhash = window.location.hash.substr(1, window.location.hash.length);
+					winhash = (winhash.search(window.location.origin) >= 0) ? winhash.replace(window.location.origin, '') : winhash;
+					if (this.$items[q].getAttribute('data-ts-ss-href') === winhref || this.$items[q].getAttribute('data-ts-ss-href') === winhash) {
+						initSlideIndex = q;
+					}
+					if (initSlideIndex) {
+						this.jump(initSlideIndex);
+					}
+				}
+			}.bind(this); //,
+		// initialSlideIndex=0;
+		slideshowPushie = new Pushie({
+			popcallback: jumpToSlide,
+			pushcallback: function ( /*data*/ ) {
+				// console.log('pushcallback');
+			},
+			replacecallback: function ( /*data*/ ) {
+				// console.log('replacecallback');
+			},
+		});
+		jumpToFirstInitialSlide();
 	}
 	this.emit('slidesInitialized');
 };
@@ -226,7 +263,6 @@ StylieSlideshow.prototype._navigate = function (direction) {
 	// slide
 	this._slide();
 	// console.log('this._slide()',this._slide());
-
 };
 
 /**
@@ -236,6 +272,19 @@ StylieSlideshow.prototype._navigate = function (direction) {
 StylieSlideshow.prototype._slide = function () {
 	// check which navigation arrows should be shown
 	this._toggleNavControls();
+	if (this.options.usepushstate) {
+		// console.log('this.current', this.current);
+		// console.log('this.$items[this.current]', this.$items[this.current]);
+		var currentSlideEl = this.$items[this.current],
+			currentSlideElTitle = currentSlideEl.getAttribute('data-ts-ss-href');
+		slideshowPushie.pushHistory({
+			data: {
+				currentSlide: this.current
+			},
+			title: currentSlideElTitle,
+			href: currentSlideElTitle
+		});
+	}
 	// translate value
 	var translateVal = -1 * this.current * 100 / this.itemsCount;
 
@@ -258,7 +307,6 @@ StylieSlideshow.prototype._slide = function () {
 	}
 	this.emit('slided', this.current);
 };
-
 
 /**
  * update slideshow ui.
@@ -329,7 +377,7 @@ if (typeof module === 'object') {
 	module.exports = StylieSlideshow;
 }
 
-},{"classie":3,"detectcss":5,"events":7,"hammerjs":12,"util":11,"util-extend":13}],3:[function(require,module,exports){
+},{"classie":3,"detectcss":5,"events":7,"hammerjs":12,"pushie":13,"util":11,"util-extend":15}],3:[function(require,module,exports){
 /*
  * classie
  * http://github.amexpub.com/modules/classie
@@ -3921,6 +3969,189 @@ if (typeof define == TYPE_FUNCTION && define.amd) {
 })(window, document, 'Hammer');
 
 },{}],13:[function(require,module,exports){
+/*
+ * pushie
+ * http://github.amexpub.com/modules/pushie
+ *
+ * Copyright (c) 2013 AmexPub. All rights reserved.
+ */
+
+'use strict';
+
+module.exports = require('./lib/pushie');
+
+},{"./lib/pushie":14}],14:[function(require,module,exports){
+/*
+ * pushie
+ * http://github.com/yawetse/pushie
+ *
+ * Copyright (c) 2015 Typesettin. All rights reserved.
+ */
+'use strict';
+
+var events = require('events'),
+	util = require('util'),
+	extend = require('util-extend'),
+	rand = function () {
+		return Math.random().toString(36).substr(2); // remove `0.`
+	},
+	token = function () {
+		return rand() + rand(); // to make it longer
+	};
+/**
+ * A module that represents a pushie object, a componentTab is a page composition tool.
+ * @{@link https://github.com/typesettin/pushie}
+ * @author Yaw Joseph Etse
+ * @copyright Copyright (c) 2014 Typesettin. All rights reserved.
+ * @license MIT
+ * @constructor pushie
+ * @requires module:events
+ * @requires module:util-extend
+ * @requires module:util
+ * @param {object} options configuration options
+ * @example 
+		pushie_id: token(),
+		push_state_support: true,
+		replacecallback: function (data) {
+			console.log(data);
+		},
+		popcallback: function (data) {
+			console.log(data);
+		},
+		pushcallback: function (data) {
+			console.log(data);
+		}
+ */
+var pushie = function (options) {
+	events.EventEmitter.call(this);
+	var defaultOptions = {
+		pushie_id: token(),
+		push_state_support: true,
+		replacecallback: function (data) {
+			console.log(data);
+		},
+		popcallback: function (data) {
+			console.log(data);
+		},
+		pushcallback: function (data) {
+			console.log(data);
+		}
+	};
+	this.options = extend(defaultOptions, options);
+	this.init = this.__init;
+	this.replaceHistory = this.__replaceHistory;
+	this.pushHistory = this.__pushHistory;
+	this.popHistory = this.__popHistory;
+	this.init();
+	// this.addBinder = this._addBinder;
+};
+
+util.inherits(pushie, events.EventEmitter);
+
+
+/**
+ * sets replace state
+ * @param {object} options data,title,href
+ * @emits replacehistory
+ */
+pushie.prototype.__replaceHistory = function (options) {
+	if (this.options.push_state_support) {
+		window.history.replaceState(options.data, options.title, options.href);
+	}
+	else {
+		var newURL = options.href;
+		newURL = (newURL.search(window.location.origin) >= 0) ? newURL.replace(window.location.origin, '') : newURL;
+		window.sessionStorage.setItem(this.options.pushie_id + newURL, JSON.stringify(options));
+		window.location.hash = newURL;
+	}
+	this.options.replacecallback(options.data);
+	this.emit('replacehistory', options);
+};
+
+/**
+ * sets push state
+ * @param {object} options data,title,href
+ * @emits pushhistory
+ */
+pushie.prototype.__pushHistory = function (options) {
+	if (this.options.push_state_support) {
+		window.history.pushState(options.data, options.title, options.href);
+	}
+	else {
+		var newURL = options.href;
+		newURL = (newURL.search(window.location.origin) >= 0) ? newURL.replace(window.location.origin, '') : newURL;
+		window.sessionStorage.setItem(this.options.pushie_id + newURL, JSON.stringify(options));
+		window.location.hash = newURL;
+	}
+	this.options.pushcallback(options.data);
+	this.emit('pushhistory', options);
+};
+
+/**
+ * restores pop state
+ * @param {object} options data,title,href
+ * @emits pushhistory
+ */
+pushie.prototype.__popHistory = function (options) {
+	var popdata;
+	if (this.options.push_state_support) {
+		this.options.popcallback(options.data);
+	}
+	else {
+		popdata = JSON.parse(window.sessionStorage.getItem(this.options.pushie_id + options.href));
+		this.options.popcallback(popdata.data);
+	}
+	this.emit('pophistory', options);
+};
+
+/**
+ * sets detects support for history push/pop/replace state and can set initial data
+ * @emits initialized
+ */
+pushie.prototype.__init = function () {
+	if (typeof window.history.pushState === 'undefined') {
+		this.options.push_state_support = false;
+	}
+	else {
+		this.options.push_state_support = true;
+	}
+
+	if (this.options.push_state_support === false) {
+		window.addEventListener('hashchange', function () {
+			var newURL = window.location.hash.substr(1, window.location.hash.length);
+
+			newURL = (newURL.search(window.location.origin) >= 0) ? newURL.replace(window.location.origin, '') : newURL;
+			this.popHistory({
+				href: newURL
+			});
+		}.bind(this));
+	}
+	else {
+		window.addEventListener('popstate', function (event) {
+			this.popHistory({
+				data: event.state
+			});
+		}.bind(this));
+
+		window.addEventListener('replacestate', function (event) {
+			this.replaceState({
+				data: event.state
+			});
+		}.bind(this));
+	}
+
+	if (this.options.initialdata && this.options.initialtitle && this.options.initialhref) {
+		this.replaceHistory({
+			data: this.options.initialdata,
+			title: this.options.initialtitle,
+			href: this.options.initialhref
+		});
+	}
+	this.emit('initialized');
+};
+module.exports = pushie;
+
+},{"events":7,"util":11,"util-extend":15}],15:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3955,7 +4186,7 @@ function extend(origin, add) {
   return origin;
 }
 
-},{}],14:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 'use strict';
 
 var fullWidthSlideshow = require('../../index'),
@@ -3975,4 +4206,4 @@ window.onload = function () {
 	window.myslideshow = fullWidthSlideshow1;
 };
 
-},{"../../index":1}]},{},[14]);
+},{"../../index":1}]},{},[16]);
