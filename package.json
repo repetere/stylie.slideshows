@@ -21,9 +21,6 @@
     "pushie": "^1.0.2",
     "util-extend": ">=1.0.1"
   },
-  "peerDependencies": {
-    "stylie": "^1.7.1"
-  },
   "devDependencies": {
     "browserify": "~4.2.1",
     "chai": "1.9.1",
