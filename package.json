@@ -2,7 +2,7 @@
   "title": "Stylie Slideshows",
   "name": "stylie.slideshows",
   "description": "A very simple (framework independent) 100% width HTML slider that scales down to mobile. Added Touch & Swipe Support. Inspired by http://tympanus.net/codrops/2013/02/26/full-width-image-slider/",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "main": "index.js",
   "engines": {
     "node": ">=0.10.x"
@@ -19,7 +19,6 @@
     "detectcss": "^1.0.2",
     "hammerjs": "^2.0.4",
     "pushie": "^1.0.2",
-    "stylie": "~1.3.0",
     "util-extend": ">=1.0.1"
   },
   "devDependencies": {
